@@ -24,13 +24,13 @@ namespace Payment.Api.HttpClient
             _logger = logger;
         }
 
-        public async Task<T> GetAsync<T>(string uri)
+        public async Task<T> GetAsync<T>(string uri, string id)
         {
             try
             {
-                T result = default;
-
-                var response = await _httpClient.GetAsync(uri);
+                var result = default(T);
+                var finalUri = uri.Replace("{id}", id);
+                var response = await _httpClient.GetAsync(finalUri);
                 if (response.IsSuccessStatusCode)
                 {
                     var stringResult = await response.Content.ReadAsStringAsync();
@@ -58,14 +58,20 @@ namespace Payment.Api.HttpClient
             }
         }
 
-        public async Task PostAsync<T>(string uri, T body)
+        public async Task<TOut> PostAsync<TIn, TOut>(string uri, TIn body)
         {
             try
             {
+                var result = default(TOut);
                 var response = await _httpClient.PostAsync(uri,
                     new StringContent(JsonConvert.SerializeObject(body), Encoding.UTF8, "application/json"));
 
-                if (!response.IsSuccessStatusCode)
+                if (response.IsSuccessStatusCode)
+                {
+                    var stringResult = await response.Content.ReadAsStringAsync();
+                    result = JsonConvert.DeserializeObject<TOut>(stringResult);
+                }
+                else
                 {
                     if (response.Content != null)
                     {
@@ -73,6 +79,8 @@ namespace Payment.Api.HttpClient
                         throw new PaymentException(response.StatusCode, responseMessage);
                     }
                 }
+
+                return result;
             }
             catch (Exception exception)
             {

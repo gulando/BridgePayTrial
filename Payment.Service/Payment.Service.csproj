@@ -5,7 +5,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Services\" />
+    <ProjectReference Include="..\Payment.Api\Payment.Api.csproj" />
+    <ProjectReference Include="..\Payment.Interfaces\Payment.Interfaces.csproj" />
   </ItemGroup>
 
 </Project>

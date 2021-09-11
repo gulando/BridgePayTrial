@@ -1,6 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
+﻿using System;
+using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Payment.Interfaces.Interfaces;
+using Payment.Interfaces.Models.Request;
+using Payment.Interfaces.Models.Response;
 
 namespace PaymentApp.Controllers
 {
@@ -9,42 +13,68 @@ namespace PaymentApp.Controllers
     public class PaymentController : ControllerBase
     {
         private readonly ILogger<PaymentController> _logger;
+        private readonly IPaymentService _paymentService;
 
-        public PaymentController(ILogger<PaymentController> logger)
+        public PaymentController(IPaymentService paymentService, ILogger<PaymentController> logger)
         {
+            _paymentService = paymentService;
             _logger = logger;
         }
 
-        // GET api/values
-        [HttpGet]
-        public ActionResult<IEnumerable<string>> Get()
+        [HttpGet("status")]
+        public async Task<PaymentStatusResponse> GetPaymentStatus(string id)
         {
-            return new string[] { "value1", "value2" };
+            _logger.LogInformation($"{nameof(PaymentController)} - {nameof(GetPaymentStatus)} - {nameof(id)} is {id}");
+
+            try
+            {
+                var status = await _paymentService.GetPaymentStatusAsync(id);
+
+                return status;
+            }
+            catch (Exception e)
+            {
+                _logger.LogInformation($"{nameof(PaymentController)} - {nameof(GetPaymentStatus)} - Exception is {e.Message}");
+                return null;
+            }
         }
 
-        // GET api/values/5
-        [HttpGet("{id}")]
-        public ActionResult<string> Get(int id)
+        [HttpPost("create")]
+        public async Task<CreatePaymentResponse> CreatePayment([FromBody] CreatePaymentRequest request)
         {
-            return "value";
+            _logger.LogInformation(
+                $"{nameof(PaymentController)} - {nameof(CreatePayment)} - {nameof(CreatePaymentRequest)} is {request}");
+
+            try
+            {
+                var status = await _paymentService.CreatePaymentAsync(request);
+
+                return status;
+            }
+            catch (Exception e)
+            {
+                _logger.LogInformation($"{nameof(PaymentController)} - {nameof(CreatePayment)} - Exception is {e.Message}");
+                return null;
+            }
         }
 
-        // POST api/values
-        [HttpPost]
-        public void Post([FromBody] string value)
+        [HttpPost("confirm")]
+        public async Task<PaymentStatusResponse> ConfirmPayment([FromBody] ConfirmPaymentRequest request)
         {
-        }
+            _logger.LogInformation(
+                $"{nameof(PaymentController)} - {nameof(ConfirmPayment)} - {nameof(ConfirmPaymentRequest)} is {request}");
 
-        // PUT api/values/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
+            try
+            {
+                var status = await _paymentService.ConfirmPaymentAsync(request);
 
-        // DELETE api/values/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
+                return status;
+            }
+            catch (Exception e)
+            {
+                _logger.LogInformation($"{nameof(PaymentController)} - {nameof(CreatePayment)} - Exception is {e.Message}");
+                return null;
+            }
         }
     }
 }

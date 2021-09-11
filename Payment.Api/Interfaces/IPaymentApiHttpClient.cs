@@ -4,8 +4,8 @@ namespace Payment.Api.Interfaces
 {
     public interface IPaymentApiHttpClient
     {
-        Task<T> GetAsync<T>(string uri);
+        Task<T> GetAsync<T>(string uri, string id);
 
-        Task PostAsync<T>(string uri, T body);
+        Task<TOut> PostAsync<TIn, TOut>(string uri, TIn body);
     }
 }
