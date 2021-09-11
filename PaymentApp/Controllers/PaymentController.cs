@@ -1,7 +1,7 @@
-﻿using System;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Payment.Api.Models;
 using Payment.Interfaces.Interfaces;
 using Payment.Interfaces.Models.Request;
 using Payment.Interfaces.Models.Response;
@@ -21,8 +21,8 @@ namespace PaymentApp.Controllers
             _logger = logger;
         }
 
-        [HttpGet("status")]
-        public async Task<PaymentStatusResponse> GetPaymentStatus(string id)
+        [HttpGet("status/{id}")]
+        public async Task<ActionResult<PaymentStatusResponse>> GetPaymentStatus(string id)
         {
             _logger.LogInformation($"{nameof(PaymentController)} - {nameof(GetPaymentStatus)} - {nameof(id)} is {id}");
 
@@ -32,48 +32,48 @@ namespace PaymentApp.Controllers
 
                 return status;
             }
-            catch (Exception e)
+            catch (PaymentException e)
             {
-                _logger.LogInformation($"{nameof(PaymentController)} - {nameof(GetPaymentStatus)} - Exception is {e.Message}");
-                return null;
+                _logger.LogInformation($"{nameof(PaymentController)} - {nameof(GetPaymentStatus)} - Status Code is {e.StatusCode}");
+                return StatusCode((int)e.StatusCode);
             }
         }
 
         [HttpPost("create")]
-        public async Task<CreatePaymentResponse> CreatePayment([FromBody] CreatePaymentRequest request)
+        public async Task<ActionResult<CreatePaymentResponse>> CreatePayment([FromBody] CreatePaymentRequest request)
         {
             _logger.LogInformation(
                 $"{nameof(PaymentController)} - {nameof(CreatePayment)} - {nameof(CreatePaymentRequest)} is {request}");
 
             try
             {
-                var status = await _paymentService.CreatePaymentAsync(request);
+                var payment = await _paymentService.CreatePaymentAsync(request);
 
-                return status;
+                return payment;
             }
-            catch (Exception e)
+            catch (PaymentException e)
             {
-                _logger.LogInformation($"{nameof(PaymentController)} - {nameof(CreatePayment)} - Exception is {e.Message}");
-                return null;
+                _logger.LogInformation($"{nameof(PaymentController)} - {nameof(CreatePayment)} - Status Code is {e.StatusCode}");
+                return StatusCode((int)e.StatusCode);
             }
         }
 
         [HttpPost("confirm")]
-        public async Task<PaymentStatusResponse> ConfirmPayment([FromBody] ConfirmPaymentRequest request)
+        public async Task<ActionResult<PaymentStatusResponse>> ConfirmPayment([FromBody] ConfirmPaymentRequest request)
         {
             _logger.LogInformation(
                 $"{nameof(PaymentController)} - {nameof(ConfirmPayment)} - {nameof(ConfirmPaymentRequest)} is {request}");
 
             try
             {
-                var status = await _paymentService.ConfirmPaymentAsync(request);
+                var confirmPayment = await _paymentService.ConfirmPaymentAsync(request);
 
-                return status;
+                return confirmPayment;
             }
-            catch (Exception e)
+            catch (PaymentException e)
             {
-                _logger.LogInformation($"{nameof(PaymentController)} - {nameof(CreatePayment)} - Exception is {e.Message}");
-                return null;
+                _logger.LogInformation($"{nameof(PaymentController)} - {nameof(CreatePayment)} - Status Code is {e.StatusCode}");
+                return StatusCode((int)e.StatusCode);
             }
         }
     }

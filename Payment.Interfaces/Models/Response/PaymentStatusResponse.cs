@@ -1,12 +1,10 @@
-﻿using Payment.Interfaces.Enums;
-
-namespace Payment.Interfaces.Models.Response
+﻿namespace Payment.Interfaces.Models.Response
 {
     public class PaymentStatusResponse
     {
         public string TransactionId { get; set; }
 
-        public Status Status { get; set; }
+        public string Status { get; set; }
 
         public double Amount { get; set; }
 

@@ -3,7 +3,9 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Payment.Api.Interfaces;
 using Payment.Api.Models;
 
@@ -13,13 +15,19 @@ namespace Payment.Api.HttpClient
     {
         private readonly System.Net.Http.HttpClient _httpClient;
         private readonly ILogger<PaymentApiHttpClient> _logger;
+        private readonly IOptions<PaymentApiSettings> _paymentOptions;
 
-        public PaymentApiHttpClient(System.Net.Http.HttpClient httpClient, ILogger<PaymentApiHttpClient> logger)
+        public PaymentApiHttpClient(System.Net.Http.HttpClient httpClient, ILogger<PaymentApiHttpClient> logger,
+            IOptions<PaymentApiSettings> paymentOptions)
         {
             _httpClient = httpClient;
-            _httpClient.DefaultRequestHeaders.Add("Content-Type", "application/json");
-            _httpClient.DefaultRequestHeaders.Add("Mechant-Id", "");
-            _httpClient.DefaultRequestHeaders.Add("Secret-Key", "");
+            _paymentOptions = paymentOptions;
+
+            var paymentSettings = _paymentOptions.Value;
+
+            _httpClient.DefaultRequestHeaders.TryAddWithoutValidation("Content-Type", "application/json");
+            _httpClient.DefaultRequestHeaders.TryAddWithoutValidation("Mechant-Id", paymentSettings.MerchantId);
+            _httpClient.DefaultRequestHeaders.TryAddWithoutValidation("Secret-Key", paymentSettings.SecretKey);
 
             _logger = logger;
         }
@@ -34,7 +42,7 @@ namespace Payment.Api.HttpClient
                 if (response.IsSuccessStatusCode)
                 {
                     var stringResult = await response.Content.ReadAsStringAsync();
-                    result = JsonConvert.DeserializeObject<T>(stringResult);
+                    result = JsonConvert.DeserializeObject<T>(JObject.Parse(stringResult)["result"].ToString());
                 }
                 else
                 {
@@ -47,12 +55,11 @@ namespace Payment.Api.HttpClient
 
                 return result;
             }
-            catch (Exception exception)
+            catch (PaymentException exception)
             {
                 _logger.LogError($"Stack Trace is {exception.StackTrace}");
                 _logger.LogError($"Uri is {uri}");
-                _logger.LogError(
-                    $"ExceptionMessage: {exception.Message} | Inner Exception: {exception.InnerException?.Message}");
+                _logger.LogError($"Status code is: {exception.StatusCode}");
 
                 throw;
             }
@@ -69,7 +76,7 @@ namespace Payment.Api.HttpClient
                 if (response.IsSuccessStatusCode)
                 {
                     var stringResult = await response.Content.ReadAsStringAsync();
-                    result = JsonConvert.DeserializeObject<TOut>(stringResult);
+                    result = JsonConvert.DeserializeObject<TOut>(JObject.Parse(stringResult)["result"].ToString());
                 }
                 else
                 {
@@ -82,12 +89,11 @@ namespace Payment.Api.HttpClient
 
                 return result;
             }
-            catch (Exception exception)
+            catch (PaymentException exception)
             {
                 _logger.LogError($"Stack Trace is {exception.StackTrace}");
                 _logger.LogError($"Uri is {uri}");
-                _logger.LogError(
-                    $"ExceptionMessage: {exception.Message} | Inner Exception: {exception.InnerException?.Message}");
+                _logger.LogError($"Status code is: {exception.StatusCode}");
 
                 throw;
             }

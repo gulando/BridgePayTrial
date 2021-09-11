@@ -1,4 +1,6 @@
-﻿namespace Payment.Interfaces.Models.Response
+﻿using Newtonsoft.Json;
+
+namespace Payment.Interfaces.Models.Response
 {
     public class CreatePaymentResponse
     {

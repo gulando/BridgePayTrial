@@ -23,7 +23,9 @@ namespace PaymentApp
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
-            services.Configure<PaymentApiSettings>(Configuration.GetSection("app:PaymentApiSettings"));
+            services.AddOptions();
+            services.Configure<PaymentApiSettings>(opts => Configuration.GetSection("PaymentApiSettings").Bind(opts));
+
             services.RegisterPaymentService();
             services.RegisterPaymentApiClient(Configuration);
         }

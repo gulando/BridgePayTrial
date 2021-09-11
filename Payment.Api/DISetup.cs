@@ -21,6 +21,10 @@ namespace Payment.Api
             services.AddHttpClient<IPaymentApiHttpClient, PaymentApiHttpClient>(config =>
             {
                 config.BaseAddress = new Uri(paymentApiSettings.BaseUrl);
+            })
+            .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+            {
+                ServerCertificateCustomValidationCallback = (message, cert, chain, sslPolicyErrors) => true,
             });
 
             return services;
