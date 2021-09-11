@@ -1,0 +1,25 @@
+curl --location --request GET 'https://localhost:5001/api/payment/status/94ac5a85-8b81-4aaa-89dd-00e968f05d01' \
+--header 'Content-Type: application/json' \
+--data-raw ''
+
+
+curl --location --request POST 'https://localhost:5001/api/payment/confirm' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "transactionId" : "7349bc64-719d-45b7-bc0f-4e4ac1549201",
+    "paRes": "12312"
+}'
+
+
+curl --location --request POST 'https://localhost:5001/api/payment/create' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "orderId" : "DBB99946-A10A-4D1B-A742-577FA026BC57",
+    "amount": 12312,
+    "currency" : "USD",
+    "country" : "CY",
+    "cardNumber" : "4111111111111111",
+    "cardHolder" : "TEST TESTER",
+    "cardExpiryDate":"1123",
+    "cvv" : "111"
+}'

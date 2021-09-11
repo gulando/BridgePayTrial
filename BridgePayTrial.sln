@@ -9,9 +9,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Payment.Api", "Payment.Api\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Payment.Service", "Payment.Service\Payment.Service.csproj", "{C4AC9A10-F420-48B8-A12D-E9C64D62BA0D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PaymentApp", "PaymentApp\PaymentApp.csproj", "{4F34E3F7-9EEE-4365-ABE1-F966072200EE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PaymentApp", "PaymentApp\PaymentApp.csproj", "{4F34E3F7-9EEE-4365-ABE1-F966072200EE}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PaymentLibrary", "PaymentLibrary", "{56CA3C00-C9EF-4385-849B-862F5981176E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E96FE9F1-9D58-4626-91F4-98344AD60B42}"
+	ProjectSection(SolutionItems) = preProject
+		Curl.txt = Curl.txt
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
