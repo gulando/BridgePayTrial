@@ -43,7 +43,7 @@ namespace PaymentApp.Controllers
         public async Task<ActionResult<CreatePaymentResponse>> CreatePayment([FromBody] CreatePaymentRequest request)
         {
             _logger.LogInformation(
-                $"{nameof(PaymentController)} - {nameof(CreatePayment)} - {nameof(CreatePaymentRequest)} is {request}");
+                $"{nameof(PaymentController)} - {nameof(CreatePayment)} - {nameof(CreatePaymentRequest)} is {request.OrderId}");
 
             try
             {
@@ -62,7 +62,7 @@ namespace PaymentApp.Controllers
         public async Task<ActionResult<PaymentStatusResponse>> ConfirmPayment([FromBody] ConfirmPaymentRequest request)
         {
             _logger.LogInformation(
-                $"{nameof(PaymentController)} - {nameof(ConfirmPayment)} - {nameof(ConfirmPaymentRequest)} is {request}");
+                $"{nameof(PaymentController)} - {nameof(ConfirmPayment)} - {nameof(ConfirmPaymentRequest)} is {request.TransactionId}");
 
             try
             {
